@@ -44,10 +44,10 @@ export default function AddBookDialog({ open, onOpenChange }: AddBookDialogProps
     defaultValues: {
       title: "",
       author: "",
-      isbn: "",
+      isbn: undefined,
       category: "",
-      description: "",
-      coverImageUrl: "",
+      description: undefined,
+      coverImageUrl: undefined,
       price: "0.00",
       totalCopies: 1,
       availableCopies: 1,
@@ -141,7 +141,7 @@ export default function AddBookDialog({ open, onOpenChange }: AddBookDialogProps
                   <FormItem>
                     <FormLabel>ISBN</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter ISBN" {...field} />
+                      <Input placeholder="Enter ISBN" {...field} value={field.value || ""} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -181,7 +181,7 @@ export default function AddBookDialog({ open, onOpenChange }: AddBookDialogProps
                 <FormItem>
                   <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Enter book description" {...field} />
+                    <Textarea placeholder="Enter book description" {...field} value={field.value || ""} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -195,7 +195,7 @@ export default function AddBookDialog({ open, onOpenChange }: AddBookDialogProps
                 <FormItem>
                   <FormLabel>Cover Image URL</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter cover image URL" {...field} />
+                    <Input placeholder="Enter cover image URL" {...field} value={field.value || ""} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

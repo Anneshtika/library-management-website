@@ -10,7 +10,7 @@ export default function BookCatalog() {
   const [sortBy, setSortBy] = useState<string>("popularity");
 
   const { data: books, isLoading } = useQuery<Book[]>({
-    queryKey: ["/api/books", { category }],
+    queryKey: ["/api/books", { category: category === "all" ? "" : category }],
   });
 
   if (isLoading) {
@@ -44,7 +44,7 @@ export default function BookCatalog() {
               <SelectValue placeholder="All Categories" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Categories</SelectItem>
+              <SelectItem value="all">All Categories</SelectItem>
               {categories.map((cat) => (
                 <SelectItem key={cat} value={cat}>
                   {cat}

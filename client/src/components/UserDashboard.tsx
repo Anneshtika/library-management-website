@@ -101,7 +101,7 @@ export default function UserDashboard() {
             ) : borrowedBooks && borrowedBooks.length > 0 ? (
               <div className="space-y-4">
                 {borrowedBooks.map((borrowed) => {
-                  const status = getStatus(borrowed.dueDate);
+                  const status = getStatus(borrowed.dueDate.toString());
                   return (
                     <div key={borrowed.id} className="flex items-center space-x-4 p-4 border border-gray-200 rounded-lg">
                       <img 
@@ -170,7 +170,7 @@ export default function UserDashboard() {
                     <div className="flex-1">
                       <h4 className="font-medium text-gray-800">{purchase.book.title}</h4>
                       <p className="text-sm text-gray-600">
-                        Purchased: {new Date(purchase.purchasedAt).toLocaleDateString()}
+                        Purchased: {new Date(purchase.purchasedAt!).toLocaleDateString()}
                       </p>
                       <p className="text-sm font-medium text-library-primary">${purchase.price}</p>
                     </div>

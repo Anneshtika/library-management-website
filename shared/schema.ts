@@ -109,6 +109,10 @@ export const insertBookSchema = createInsertSchema(books).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
+}).extend({
+  isbn: z.string().optional(),
+  description: z.string().optional(),
+  coverImageUrl: z.string().optional(),
 });
 
 export const insertBorrowedBookSchema = createInsertSchema(borrowedBooks).omit({

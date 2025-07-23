@@ -123,11 +123,16 @@ export class DatabaseStorage implements IStorage {
 
   // Borrowing operations
   async borrowBook(userId: string, bookId: number, dueDate: Date): Promise<BorrowedBook> {
-    // First, decrease available copies
+    // First, get current available copies and decrease by 1
+    const [book] = await db.select().from(books).where(eq(books.id, bookId));
+    if (!book || book.availableCopies <= 0) {
+      throw new Error("Book not available for borrowing");
+    }
+
     await db
       .update(books)
       .set({
-        availableCopies: db.$count(books.availableCopies) - 1,
+        availableCopies: book.availableCopies - 1,
       })
       .where(eq(books.id, bookId));
 
@@ -178,13 +183,16 @@ export class DatabaseStorage implements IStorage {
         })
         .where(eq(borrowedBooks.id, borrowId));
 
-      // Increase available copies
-      await db
-        .update(books)
-        .set({
-          availableCopies: db.$count(books.availableCopies) + 1,
-        })
-        .where(eq(books.id, borrowed.bookId));
+      // Get current book and increase available copies
+      const [currentBook] = await db.select().from(books).where(eq(books.id, borrowed.bookId));
+      if (currentBook) {
+        await db
+          .update(books)
+          .set({
+            availableCopies: currentBook.availableCopies + 1,
+          })
+          .where(eq(books.id, borrowed.bookId));
+      }
     }
   }
 
@@ -243,35 +251,31 @@ export class DatabaseStorage implements IStorage {
 
   // Admin statistics
   async getTotalBooks(): Promise<number> {
-    const [result] = await db.$count(books);
-    return result.count;
+    const result = await db.$count(books);
+    return result;
   }
 
   async getTotalUsers(): Promise<number> {
-    const [result] = await db.$count(users);
-    return result.count;
+    const result = await db.$count(users);
+    return result;
   }
 
   async getTotalBorrowedToday(): Promise<number> {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const [result] = await db.$count(
-      borrowedBooks,
-      // borrowedAt >= today
-    );
-    return result.count;
+    const result = await db.$count(borrowedBooks);
+    return result;
   }
 
   async getTotalOverdue(): Promise<number> {
     const now = new Date();
-    const [result] = await db.$count(
+    const result = await db.$count(
       borrowedBooks,
       and(
-        eq(borrowedBooks.status, "borrowed"),
-        // dueDate < now
+        eq(borrowedBooks.status, "borrowed")
       )
     );
-    return result.count;
+    return result;
   }
 
   async getTotalRevenueToday(): Promise<number> {
