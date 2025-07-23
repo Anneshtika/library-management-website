@@ -10,7 +10,7 @@ export default function BookCatalog() {
   const [sortBy, setSortBy] = useState<string>("popularity");
 
   const { data: books, isLoading } = useQuery<Book[]>({
-    queryKey: ["/api/books", { category: category === "all" ? "" : category }],
+    queryKey: ["/api/books", category === "all" ? "" : category],
   });
 
   if (isLoading) {
